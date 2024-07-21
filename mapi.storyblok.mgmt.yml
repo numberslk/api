@@ -5,6 +5,7 @@ info:
 servers:
   - url: http://{{base_path}}
   - url: https://mapi.storyblok.com
+  - url: https://mapi.storyblok.com/v1/spaces
   - url: http://{{global_path}}
 components:
   securitySchemes:
