@@ -1,0 +1,2970 @@
+openapi: 3.0.0
+info:
+  title: Management API
+  version: 1.0.0
+servers:
+  - url: http://{{base_path}}
+  - url: https://mapi.storyblok.com
+  - url: http://{{global_path}}
+components:
+  securitySchemes:
+    apikeyAuth:
+      type: http
+      scheme: apikey
+    noauthAuth:
+      type: http
+      scheme: noauth
+security:
+  - apikeyAuth: []
+tags:
+  - name: Stories
+  - name: Stories > Retrieve Multiple Stories
+  - name: Stories > Retrieve Multiple Stories > Parameter Usage
+  - name: Stories > Retrieve Multiple Stories > Parameter Usage > Sort_by
+  - name: Stories > Retrieve Multiple Stories > Parameter Usage > Filter_query
+  - name: Stories > Get story versions
+  - name: Stories > Get story versions > Parameter usage
+  - name: Collaborators
+  - name: Components
+    description: >-
+      A component is a standalone entity that is meaningful in its own right.
+      While components (or bloks) can be nested in each other, semantically they
+      remain equal. Each component is a small piece of your data structure which
+      can be filled with content or nested by your content editor. One component
+      can consist of as many field types as required.
+  - name: Components > Retrieve multiple Components
+  - name: Components > Retrieve multiple Components > Parameter Usage
+  - name: Component Groups
+  - name: Component Groups > Retrieve multiple Component Groups
+  - name: Component Groups > Retrieve multiple Component Groups > Parameter Usage
+  - name: Assets
+    description: >-
+      Assets like images, videos and documents are kept in the CDN as long as
+      possible and will rarely hit the origin server. Each asset object
+      references one of those uploaded images, videos and documents.
+
+
+      ## [The Asset
+      Object](https://www.storyblok.com/docs/api/management#core-resources/assets/the-asset-object)
+
+
+      | Property | Description |
+
+      | --- | --- |
+
+      | `id` | Numeric Unique ID |
+
+      | `filename` | Full path of the asset, including the file name |
+
+      | `space_id` | Space ID in which the asset is connected |
+
+      | `created_at` | Creation date (Format: `YYYY-mm-dd HH:MM`) |
+
+      | `updated_at` | Latest update date (Format: `YYYY-mm-dd HH:MM`) |
+
+      | `deleted_at` | Deleted date (Format: `YYYY-mm-dd HH:MM`) |
+
+      | `file` | File Object |
+
+      | `asset_folder_id` | Id of the folder containing this asset |
+
+      | `short_filename` | The file name of the asset |
+
+      | `content_type` | The MIME type of the asset |
+
+      | `content_length` | The content length in bytes |
+
+      | `is_private` | Defines if the asset should be inaccessable to the public
+      |
+  - name: Assets > Retrieve an Asset
+  - name: Assets > Retrieve an Asset > Parameter Usage
+  - name: Assets > Retrieve multiple Assets
+  - name: Assets > Retrieve multiple Assets > Parameter Usage
+  - name: Assets > Upload Asset
+  - name: Assets > Update Asset
+  - name: Asset Folders
+  - name: Asset Folders > Retrieve multiple Asset Folders
+  - name: Asset Folders > Retrieve multiple Asset Folders > Parameter Usage
+  - name: Datasources
+  - name: Datasources > Retrieve multiple Datasources
+  - name: Datasources > Retrieve multiple Datasources > Parameter Usage
+  - name: Datasource Entries
+  - name: Datasource Entries > Retrieve multiple Datasource entries
+  - name: >-
+      Datasource Entries > Retrieve multiple Datasource entries > Parameter
+      Usage
+  - name: Spaces
+  - name: Space Roles
+  - name: Space Roles > Retrieve multiple Space Role
+  - name: Space Roles > Retrieve multiple Space Role > Parameter Usage
+  - name: Tasks
+  - name: Approvals
+  - name: Approvals > Retrieve multiple Approvals
+  - name: Activities
+  - name: Activities > Retrieve Multiple Activities
+  - name: Activities > Retrieve Multiple Activities > parameter usage
+  - name: Presets
+    description: >-
+      Presets are blocks filled with the content you currently have in the
+      selected block. The saved presets are shown for all users at the selection
+      of new blocks.
+  - name: Presets > Retrieve multiple Presets
+  - name: Presets > Retrieve multiple Presets > Parameter Usage
+  - name: Field types
+  - name: Workflows
+  - name: Workflow Stages
+  - name: Workflow Stages > Retrieve multiple Workflow Stages
+  - name: Workflow Stages > Retrieve multiple Workflow Stages > Parameter Usage
+  - name: Workflow Stage Changes
+  - name: Releases
+    description: "With the\_[Release App](https://www.storyblok.com/apps/releases_only)\_you’re able to create multiple releases which can be scheduled independently. Imagine you want to prepare a specific change on your startpage and release it in three weeks. To do so you can create a release where your changes will life until you schedule them."
+  - name: Releases > Retrieve multiple Releases
+  - name: Releases > Retrieve multiple Releases > Parameter Usage
+  - name: Branch
+  - name: Branch > Retrieve Multiple Branches
+  - name: Branch > Retrieve Multiple Branches > Parameter Usage
+  - name: Branch deployments
+    description: "The endpoint\_`/v1/spaces/:space_id/deployments`\_can be used to trigger the deployment process across the branches.\n\nStories created via the Management API are created in the default branch (Preview). Subsequently, they can be released to other branches (e.g. Staging, Production) by creating a branch deployment.\n\nStories created via the Management API are created in the default branch (Preview). Subsequently, they can be deployed to other branches (e.g. Staging, Production according to the \"source of sync\" option) by triggering a deployment.\n\nFor using this endpoint, you have to install the Pipelines application."
+  - name: Fetch all users in an org
+    description: >-
+      This requires a user to be part of an org.  
+
+      This is undocumented but useful for orgs that would want to conduct login
+      audits
+  - name: Discussions
+    description: >-
+      Triggers discussion messages for a specific content entry. It allows you
+      to start a discussion request with another collaborator of the space.
+  - name: Discussions > Retrieve my discussions
+  - name: Discussions > Retrieve my discussions > Parameter Usage
+  - name: Export/Import content entry
+paths:
+  /239479/stories:
+    get:
+      tags:
+        - Stories > Retrieve Multiple Stories > Parameter Usage
+      summary: is_published
+      parameters:
+        - name: is_published
+          in: query
+          schema:
+            type: boolean
+          example: 'false'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /239479/stories/:
+    get:
+      tags:
+        - Stories > Retrieve Multiple Stories > Parameter Usage > Filter_query
+      summary: Filter_query[any_in_array]
+      parameters:
+        - name: starts_with
+          in: query
+          schema:
+            type: string
+          example: articles/
+        - name: filter_query[categories][in_array]
+          in: query
+          schema:
+            type: string
+          example: >-
+            8a1aaf75-5bf3-4a12-9880-c3cdc089c607,48b2fd50-5610-4842-b304-e1617391bd28
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    post:
+      tags:
+        - Stories
+      summary: Internationalization for stories
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                story:
+                  name: Test Article
+                  slug: test-article
+                  content:
+                    component: default-page
+                    body:
+                      - component: teaser
+                        headline: New day
+                        headline__i18n__sw: Siku Mpya
+                publish: 1
+      responses:
+        '201':
+          description: Created
+          headers:
+            Content-Type:
+              schema:
+                type: string
+                example: application/json; charset=utf-8
+            Content-Length:
+              schema:
+                type: integer
+                example: '1454'
+            Connection:
+              schema:
+                type: string
+                example: keep-alive
+            Date:
+              schema:
+                type: string
+                example: Fri, 25 Aug 2023 05:56:12 GMT
+            Server:
+              schema:
+                type: string
+                example: nginx/1.23.3
+            X-Frame-Options:
+              schema:
+                type: string
+                example: SAMEORIGIN
+            X-XSS-Protection:
+              schema:
+                type: string
+                example: 1; mode=block
+            X-Content-Type-Options:
+              schema:
+                type: string
+                example: nosniff
+            X-Download-Options:
+              schema:
+                type: string
+                example: noopen
+            X-Permitted-Cross-Domain-Policies:
+              schema:
+                type: string
+                example: none
+            Referrer-Policy:
+              schema:
+                type: string
+                example: strict-origin-when-cross-origin
+            ETag:
+              schema:
+                type: string
+                example: W/"80594ded538decf0593eb42fedf42953"
+            Cache-Control:
+              schema:
+                type: string
+                example: max-age=0, private, must-revalidate
+            X-Request-Id:
+              schema:
+                type: string
+                example: af3404b6-8f8c-4b9b-977b-94cc4ab16ac6
+            X-Runtime:
+              schema:
+                type: number
+                example: '0.182236'
+            Vary:
+              schema:
+                type: string
+                example: Origin
+            X-Cache:
+              schema:
+                type: string
+                example: Miss from cloudfront
+            Via:
+              schema:
+                type: string
+                example: >-
+                  1.1 a27022837959b6f70545c8d6d0de9d04.cloudfront.net
+                  (CloudFront)
+            X-Amz-Cf-Pop:
+              schema:
+                type: string
+                example: IAD12-P4
+            X-Amz-Cf-Id:
+              schema:
+                type: string
+                example: GbLmYdVJiaFYijEi9zjKKQ6Y73ZNWv-f-E3A4qs1hLGAnNokeh1WZw==
+          content:
+            application/json:
+              schema:
+                type: object
+              example:
+                story:
+                  name: Test Article
+                  parent_id: 0
+                  group_id: f860b823-7067-4f86-a964-8466f68c27f0
+                  alternates: []
+                  created_at: '2023-08-25T05:56:12.650Z'
+                  deleted_at: null
+                  sort_by_date: null
+                  tag_list: []
+                  updated_at: '2023-08-25T05:56:12.739Z'
+                  published_at: '2023-08-25T05:56:12.725Z'
+                  id: 360056597
+                  uuid: ca337b73-79b5-4f74-926a-1b3e95c02b72
+                  is_folder: false
+                  content:
+                    component: default-page
+                    body:
+                      - component: teaser
+                        headline: New day
+                        headline__i18n__sw: Siku Mpya
+                        _uid: 84539069-e8d6-4e31-80cc-3686dba55de6
+                    _uid: 2ce5abd8-7b49-49bd-ba19-f2ab00651705
+                  published: true
+                  slug: test-article
+                  path: null
+                  full_slug: test-article
+                  default_root: null
+                  disble_fe_editor: false
+                  parent: null
+                  is_startpage: false
+                  unpublished_changes: false
+                  meta_data: null
+                  imported_at: null
+                  preview_token:
+                    token: 03be95808533b26ea785d77aa6ecfa42d7b89f6b
+                    timestamp: '1692942972'
+                  pinned: false
+                  breadcrumbs: []
+                  publish_at: null
+                  expire_at: null
+                  first_published_at: '2023-08-25T05:56:12.725Z'
+                  last_author:
+                    id: 204429
+                    userid: api.test@storyblok.com
+                    friendly_name: Api test
+                  user_ids: []
+                  space_role_ids: []
+                  translated_slugs: []
+                  localized_paths:
+                    - path: test-article
+                      name: null
+                      lang: sw
+                      published: null
+                    - path: test-article
+                      name: null
+                      lang: es-ar
+                      published: null
+                    - path: test-article
+                      name: null
+                      lang: es
+                      published: null
+                  position: 0
+                  translated_stories: []
+                  can_not_view: null
+                  is_scheduled: null
+  /{space_id}/stories:
+    get:
+      tags:
+        - Assets > Retrieve an Asset > Parameter Usage
+      summary: reference_search
+      parameters:
+        - name: page
+          in: query
+          schema:
+            type: integer
+          example: '1'
+        - name: per_page
+          in: query
+          schema:
+            type: integer
+          example: '25'
+        - name: reference_search
+          in: query
+          schema:
+            type: string
+          example: >-
+            a.storyblok.com/f/233027/6000x4000/f096728611/pexels-hermaion-173499.jpeg
+        - name: space_id
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /239479/stories/335015953/versions:
+    get:
+      tags:
+        - Stories > Get story versions
+      summary: Get story versions
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /{space_id}/stories/314931981:
+    get:
+      tags:
+        - Stories
+      summary: Retrieve One Story
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: space_id
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /{space_id}/stories/:
+    post:
+      tags:
+        - Stories
+      summary: Create a Story
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                story:
+                  name: A New Blog
+                  slug: a-new-story
+                  content:
+                    component: page
+                    body:
+                      - component: teaser
+                        headline: This is a Story Created by Management API!
+                  is_folder: false
+                  parent_id: 0
+                  disable_fe_editor: false
+                  path: null
+                  is_startpage: false
+                  publish: false
+      parameters:
+        - name: space_id
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    get:
+      tags:
+        - Releases > Retrieve multiple Releases > Parameter Usage
+      summary: Retrieve only published pages from a release
+      parameters:
+        - name: release_scope_id
+          in: query
+          schema:
+            type: integer
+          example: '114669'
+        - name: in_release
+          in: query
+          schema:
+            type: integer
+          example: '114669'
+        - name: space_id
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /{space_id}/stories/356310462:
+    put:
+      tags:
+        - Stories
+      summary: Update a Story
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                story:
+                  name: A New Blog
+                  slug: a-new-story
+                  content:
+                    component: page
+                    body:
+                      - component: teaser
+                        headline: This is a Story Created by Management API!
+                      - component: teaser
+                        headline: Another Teaser added while updating
+                  is_folder: false
+                  parent_id: 0
+                  disable_fe_editor: false
+                  path: null
+                  is_startpage: false
+                  publish: false
+      parameters:
+        - name: space_id
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /{space_id}/stories/356317150:
+    delete:
+      tags:
+        - Stories
+      summary: Delete a Story
+      parameters:
+        - name: space_id
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /{space_id}/stories/356310462/publish:
+    get:
+      tags:
+        - Stories
+      summary: Publish a Story
+      parameters:
+        - name: space_id
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /{space_id}/stories/356310462/unpublish:
+    get:
+      tags:
+        - Stories
+      summary: Unpublish a Story
+      parameters:
+        - name: space_id
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /239479/stories/335015953/compare:
+    get:
+      tags:
+        - Stories
+      summary: Compare story versions
+      security:
+        - apikeyAuth: []
+      parameters:
+        - name: version
+          in: query
+          schema:
+            type: integer
+          example: '159980137'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /{space_id}/collaborators/:
+    get:
+      tags:
+        - Collaborators
+      summary: Retrieve Collaborators
+      parameters:
+        - name: per_page
+          in: query
+          schema:
+            type: integer
+          example: '100'
+        - name: space_id
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    post:
+      tags:
+        - Collaborators
+      summary: Add a collaborator
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                email: insert email
+                role: admin
+                space_id: 1234
+                space_role_id: []
+                permissions: []
+                allow_multiple_roles_creation: false
+      parameters:
+        - name: space_id
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /{space_id}/v1/spaces/233027/collaborators/{collaborator_id}:
+    delete:
+      tags:
+        - Collaborators
+      summary: Delete collaborator
+      parameters:
+        - name: space_id
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: collaborator_id
+          in: path
+          schema:
+            type: integer
+          required: true
+          example: '1234'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v1/users/me':
+    get:
+      tags:
+        - Collaborators
+      summary: Add user with SSO
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /{space_id}/components/:
+    get:
+      tags:
+        - Components > Retrieve multiple Components
+      summary: Retrieve Multiple Components
+      parameters:
+        - name: space_id
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    post:
+      tags:
+        - Components
+      summary: Create a component
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                component:
+                  name: Full_fields
+                  display_name: Full_fields
+                  image: ''
+                  preview: ''
+                  schema:
+                    Block_type:
+                      type: bloks
+                      key: Block_type
+                      pos: 0
+                    Text_type:
+                      type: text
+                      key: Text_type
+                      pos: 1
+                    TextArea_type:
+                      type: textarea
+                      key: TextArea_type
+                      pos: 2
+                    RichText_type:
+                      type: richtext
+                      key: RichText_type
+                      pos: 3
+                    Markdown_type:
+                      type: markdown
+                      key: Markdown_type
+                      pos: 4
+                    Number_type:
+                      type: number
+                      key: Number_type
+                      pos: 5
+                    DataTime_type:
+                      type: datetime
+                      key: DataTime_type
+                      pos: 6
+                    Bollean_type:
+                      type: boolean
+                      key: Bollean_type
+                      pos: 7
+                    MultiOptions_type:
+                      type: options
+                      key: MultiOptions_type
+                      pos: 8
+                    SingleOptions_type:
+                      type: option
+                      use_uuid: true
+                      key: SingleOptions_type
+                      pos: 9
+                    Asset_type:
+                      type: asset
+                      key: Asset_type
+                      pos: 10
+                    MultiAssets_type:
+                      type: multiasset
+                      key: MultiAssets_type
+                      pos: 11
+                    Link_type:
+                      type: multilink
+                      key: link_type
+                      pos: 12
+                    Table_type:
+                      type: table
+                      key: Table_type
+                      pos: 13
+                    Group_type:
+                      type: section
+                    ImageOLD_type:
+                      type: image
+                    FileOLD_type:
+                      type: file
+                    Plugin_type:
+                      type: text
+                  is_root: true
+                  is_nestable: true
+                  component_group_uuid: ''
+      parameters:
+        - name: space_id
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /{space_id}/components/{component_id}:
+    get:
+      tags:
+        - Components
+      summary: Retrieve a Component
+      parameters:
+        - name: space_id
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: component_id
+          in: path
+          schema:
+            type: integer
+          required: true
+          example: '4401385'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    delete:
+      tags:
+        - Components
+      summary: Delete a Component
+      parameters:
+        - name: space_id
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: component_id
+          in: path
+          schema:
+            type: integer
+          required: true
+          description: You can first do a GET request and next a DELETE
+          example: '4401479'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    put:
+      tags:
+        - Components
+      summary: Update a component
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                component:
+                  name: teaser
+                  display_name: null
+                  created_at: '2023-05-29T09:53:40.169Z'
+                  updated_at: '2023-05-29T09:53:40.169Z'
+                  id: 4043859
+                  schema:
+                    headline:
+                      type: text
+                  image: null
+                  preview_field: null
+                  is_root: true
+                  preview_tmpl: null
+                  is_nestable: false
+                  all_presets: []
+                  preset_id: null
+                  real_name: teaser
+                  component_group_uuid: null
+                  color: null
+                  icon: null
+      parameters:
+        - name: space_id
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: component_id
+          in: path
+          schema:
+            type: integer
+          required: true
+          example: '4043859'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /{space_id}/component_groups/:
+    get:
+      tags:
+        - Component Groups > Retrieve multiple Component Groups
+      summary: Retrieve multiple Component Groups
+      parameters:
+        - name: space_id
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    post:
+      tags:
+        - Component Groups
+      summary: Create a Component Group
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                component_group:
+                  name: storyblok
+      parameters:
+        - name: Authorization
+          in: header
+          schema:
+            type: string
+          example: YOUR_OAUTH_TOKEN
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: space_id
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /{space_id}/component_groups/{component_groups_id}:
+    get:
+      tags:
+        - Component Groups
+      summary: Retrieve a Component Group
+      parameters:
+        - name: space_id
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: component_groups_id
+          in: path
+          schema:
+            type: string
+          required: true
+          description: Add the component group id
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    delete:
+      tags:
+        - Component Groups
+      summary: Delete a Component Group
+      parameters:
+        - name: space_id
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: component_groups_id
+          in: path
+          schema:
+            type: string
+          required: true
+          description: Add the component group id
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    put:
+      tags:
+        - Component Groups
+      summary: Update a Component group
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                component_group:
+                  name: pagepagepage
+      parameters:
+        - name: Authorization
+          in: header
+          schema:
+            type: string
+          example: YOUR_OAUTH_TOKEN
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: space_id
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: component_groups_id
+          in: path
+          schema:
+            type: integer
+          required: true
+          example: '194279'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /{space_id}/assets/{asset_id}:
+    get:
+      tags:
+        - Assets > Retrieve an Asset
+      summary: Retrieve an Asset
+      parameters:
+        - name: space_id
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: asset_id
+          in: path
+          schema:
+            type: integer
+          required: true
+          example: '10636437'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    delete:
+      tags:
+        - Assets
+      summary: Delete an asset
+      parameters:
+        - name: space_id
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: asset_id
+          in: path
+          schema:
+            type: string
+          required: true
+          description: Add the asset id
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /{space_id}/assets/:
+    get:
+      tags:
+        - Assets > Retrieve multiple Assets
+      summary: Retrieve multiple Assets
+      parameters:
+        - name: space_id
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    post:
+      tags:
+        - Assets > Update Asset
+      summary: Update an asset
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              type: string
+              example: >-
+                "{\n    \"filename\":
+                \"https://s3.amazonaws.com/a.storyblok.com/f/233027/540x334/2e00983924/oatly-banner.webp\",\n   
+                \"id\": \"10636437\", //asset id\n    \"validate_upload\":
+                \"1\"\n}"
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: Authorization
+          in: header
+          schema:
+            type: string
+          example: YOUR_OAUTH_TOKEN
+        - name: space_id
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /{space_id}/assets/bulk_update:
+    post:
+      tags:
+        - Assets > Update Asset
+      summary: Move an asset to a folder
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                ids:
+                  - 10636437
+                asset:
+                  asset_folder_id: 299783
+      parameters:
+        - name: authority
+          in: header
+          schema:
+            type: string
+          example: app.storyblok.com
+        - name: space_id
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /{space_id}/asset_folders/:
+    get:
+      tags:
+        - Asset Folders > Retrieve multiple Asset Folders
+      summary: Retrieve multiple Asset Folders
+      parameters:
+        - name: Authorization
+          in: header
+          schema:
+            type: string
+          example: YOUR_OAUTH_TOKEN
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: space_id
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    post:
+      tags:
+        - Asset Folders
+      summary: Create an Asset Folder
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              type: string
+              example: >-
+                "{\n    \"asset_folder\": {\n        \"name\": \"10 years
+                assets\", //Name from your asset folder\n       
+                \"parent_id\":[] //The identifier of the parent folder. The
+                parent_id parameter is optional. If the parent_id is omitted or
+                set to null, the folder is created at root level\n    }\n}"
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: Authorization
+          in: header
+          schema:
+            type: string
+          example: YOUR_OAUTH_TOKEN
+        - name: space_id
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /{space_id}/asset_folders/{asset_folder_id}:
+    get:
+      tags:
+        - Asset Folders
+      summary: Retrieve an Asset Folder
+      parameters:
+        - name: space_id
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: asset_folder_id
+          in: path
+          schema:
+            type: integer
+          required: true
+          description: Add the asset folder ID
+          example: '299778'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    delete:
+      tags:
+        - Asset Folders
+      summary: Retrieve an Asset Folder Copy
+      parameters:
+        - name: space_id
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: asset_folder_id
+          in: path
+          schema:
+            type: string
+          required: true
+          description: Add the asset folder ID
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    put:
+      tags:
+        - Asset Folders
+      summary: Update an Asset Folder
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              type: string
+              example: >-
+                "{\n    \"asset_folder\": {\n        \"id\": 299778,\n       
+                \"name\": \"Update Header Images\"\n    }\n}"
+      parameters:
+        - name: Authorization
+          in: header
+          schema:
+            type: string
+          example: YOUR_OAUTH_TOKEN
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: space_id
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: asset_folder_id
+          in: path
+          schema:
+            type: integer
+          required: true
+          example: '299778'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /239479/datasources/:
+    get:
+      tags:
+        - Datasources > Retrieve multiple Datasources
+      summary: Retrieve multiple Datasources
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    post:
+      tags:
+        - Datasources
+      summary: Create a Datasource
+      description: The API creates a new datasource whose name is "Labels for Website"
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                datasource:
+                  name: Labels for Website
+                  slug: labels
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /239479/datasources/201005:
+    get:
+      tags:
+        - Datasources
+      summary: Retrieve a Datasource
+      description: >-
+        The API retrieves one datasource called 'Background colors' in space
+        239479
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /239479/datasources/212925:
+    put:
+      tags:
+        - Datasources
+      summary: Update a Datasource
+      description: >-
+        The API updates the datasource name which was 'Labels for Website' to
+        'Labels for Postman Website'
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                datasource:
+                  id: 91
+                  name: Labels for Postman Website Two
+                  slug: labels_for_website
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /239479/datasources/212927:
+    delete:
+      tags:
+        - Datasources
+      summary: Delete a Datasource
+      description: >-
+        The API will delete a datasource called "TestDatasource" whose "id" is
+        212927
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /239479/datasource_entries/:
+    get:
+      tags:
+        - Datasource Entries > Retrieve multiple Datasource entries
+      summary: Retrieve multiple Datasource entries
+      description: >-
+        The API retrieves datasource entries from a datasource by providing
+        numeric id of a datasource. In the example, it has retrieved the
+        datasource entries for the datasource 'Background colors' whose id is
+        201005
+      parameters:
+        - name: datasource_id
+          in: query
+          schema:
+            type: integer
+          example: '201005'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    post:
+      tags:
+        - Datasource Entries
+      summary: Create a Datasource entry
+      description: >-
+        The API creates a datasource entry to datasource 'Background colors'
+        whose datasource id is 201005
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                datasource_entry:
+                  name: Purple
+                  value: purple
+                  datasource_id: 201005
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /239479/datasource_entries/6136170:
+    get:
+      tags:
+        - Datasource Entries
+      summary: Retrieve a Datasource Entry
+      description: >-
+        The API retrieves a single datasource entry with a specific numeric ID
+        which is 6136170
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /239479/datasource_entries/6432669:
+    put:
+      tags:
+        - Datasource Entries
+      summary: Update Datasource Entry
+      description: The API updates a datasource entry.
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                datasource_entry:
+                  id: 6432669
+                  name: Green
+                  value: green
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /239479/datasource_entries/6432679:
+    delete:
+      tags:
+        - Datasource Entries
+      summary: Delete a Datasource Entry
+      description: The API deletes a datasource entry by using its numeric ID
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /{space_id}/:
+    get:
+      tags:
+        - Spaces
+      summary: Retrieve a Space
+      parameters:
+        - name: space_id
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /:
+    get:
+      tags:
+        - Spaces
+      summary: Retrieve Multiple Spaces
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    post:
+      tags:
+        - Spaces
+      summary: Duplicate a Space
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                space:
+                  name: Test
+                  dup_id: 245685
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /245689:
+    put:
+      tags:
+        - Spaces
+      summary: Update a Space
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                space:
+                  name: Updated Test Space new odey
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /247819/:
+    delete:
+      tags:
+        - Spaces
+      summary: Delete a Space
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /245685/backups:
+    post:
+      tags:
+        - Spaces
+      summary: Backup a Space
+      requestBody:
+        content: {}
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /245685/space_roles:
+    get:
+      tags:
+        - Space Roles > Retrieve multiple Space Role
+      summary: Retrieve multiple Space Role
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /{space_id}/space_roles/62210:
+    get:
+      tags:
+        - Space Roles
+      summary: Retrieve a Space Role
+      parameters:
+        - name: space_id
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    delete:
+      tags:
+        - Space Roles
+      summary: Delete a Space Role
+      parameters:
+        - name: space_id
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /{space_id}/space_roles/:
+    post:
+      tags:
+        - Space Roles
+      summary: Create a Space Role
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                space_role:
+                  role: Another space role
+      parameters:
+        - name: space_id
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /spaces/233027/space_roles/18:
+    put:
+      tags:
+        - Space Roles
+      summary: Update a Space Role
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                space_role:
+                  id: 18
+                  role: English Editor
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /{space_id}/tasks/45130:
+    get:
+      tags:
+        - Tasks
+      summary: Retrieve a Task
+      parameters:
+        - name: space_id
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /{space_id}/tasks:
+    get:
+      tags:
+        - Tasks
+      summary: Retrieve Multiple Tasks
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: space_id
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /{space_id}/tasks/:
+    post:
+      tags:
+        - Tasks
+      summary: Create a Task
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                task:
+                  name: My Task Name
+                  description: A task for manual firing
+                  task_type: webhook
+                  webhook_url: https://www.storyblok.com
+                  user_dialog:
+                    name:
+                      type: text
+                      display_name: What's your name?
+                    environment:
+                      type: option
+                      options:
+                        - name: Dev
+                          value: dev
+                        - name: Staging
+                          value: staging
+                      display_name: Which environment?
+      parameters:
+        - name: space_id
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /{space_id}/tasks/45131:
+    put:
+      tags:
+        - Tasks
+      summary: Update a Task
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                task:
+                  id: 45130
+                  name: My New Task
+                  description: This task's description and user_dialog are updated now!
+                  task_type: webhook
+                  last_execution: null
+                  lambda_code: null
+                  last_response: null
+                  protected_vars: •••••••
+                  webhook_url: https://www.storyblok.com
+                  user_dialog: {}
+      parameters:
+        - name: space_id
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /{space_id}/tasks/45132:
+    delete:
+      tags:
+        - Tasks
+      summary: Delete a Task
+      parameters:
+        - name: space_id
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /{space_id}/approvals/:
+    post:
+      tags:
+        - Approvals
+      summary: Create Release Approval
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              type: string
+              example: >-
+                "{\r\n    \"approval\": {\r\n        \"story_id\": null, //Story
+                id from your space (When null, the entire release must be
+                approved)\r\n        \"approver_id\": null// Approver id is the
+                same as the collaborator id, that said, you can use the
+                collaborator object\r\n    },\r\n    \"release_id\": null
+                //release id you want to be approved\r\n}"
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: Authorization
+          in: header
+          schema:
+            type: string
+          example: YOUR_OAUTH_TOKEN
+        - name: space_id
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /{space_id}/approvals/{approval_id}:
+    delete:
+      tags:
+        - Approvals
+      summary: Delete an Approval
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: Authorization
+          in: header
+          schema:
+            type: string
+          example: YOUR_OAUTH_TOKEN
+        - name: space_id
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: approval_id
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    get:
+      tags:
+        - Approvals
+      summary: Retrieve an Approval
+      parameters:
+        - name: space_id
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: approval_id
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /{space_id}/activities:
+    get:
+      tags:
+        - Activities > Retrieve Multiple Activities > parameter usage
+      summary: created_at_gte
+      parameters:
+        - name: created_at_gte
+          in: query
+          schema:
+            type: string
+          example: '"2023-08-01"'
+        - name: space_id
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /{space_id}/activities/:
+    get:
+      tags:
+        - Activities > Retrieve Multiple Activities
+      summary: Retrieve Multiple Activities
+      parameters:
+        - name: space_id
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /{space_id}/activities/335277185:
+    get:
+      tags:
+        - Activities
+      summary: Retrieve an Activity
+      parameters:
+        - name: space_id
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /{space_id}/presets/:
+    get:
+      tags:
+        - Presets > Retrieve multiple Presets
+      summary: Retrieve multiple Presets
+      parameters:
+        - name: Authorization
+          in: header
+          schema:
+            type: string
+          example: YOUR_OAUTH_TOKEN
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: space_id
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    post:
+      tags:
+        - Presets
+      summary: Create a Preset
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              type: string
+              example: >-
+                "{\n    \"preset\": {\n        \"name\": \"PresetGrid1\", //Name
+                is required\n        \"preset\": {\n            \"headline\":
+                \"preset grid creation1\"\n        },\n        \"component_id\":
+                4043860//Use numeric component id for referencing\n    }\n}"
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: Authorization
+          in: header
+          schema:
+            type: string
+          example: YOUR_OAUTH_TOKEN
+        - name: space_id
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /{space_id}/presets/{preset_id}:
+    delete:
+      tags:
+        - Presets
+      summary: Delete a Preset
+      parameters:
+        - name: Authorization
+          in: header
+          schema:
+            type: string
+          example: YOUR_OAUTH_TOKEN
+        - name: space_id
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: preset_id
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    get:
+      tags:
+        - Presets
+      summary: Retrieve a Preset
+      parameters:
+        - name: Authorization
+          in: header
+          schema:
+            type: string
+          example: YOUR_OAUTH_TOKEN
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: space_id
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: preset_id
+          in: path
+          schema:
+            type: integer
+          required: true
+          example: '1863288'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    put:
+      tags:
+        - Presets
+      summary: Update a Preset
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              type: string
+              example: >-
+                "{\n    \"preset\": {\n        \"id\": 1863288, //Numeric ID of
+                your preset\n        \"name\": \"Teaser with headline and
+                image\", //Given name of your preset\n        \"preset\": {
+                //Object with the fields you want to save in the
+                preset\n            \"headline\": \"This is a super value for
+                the preset!\",\n            \"image\":
+                \"//a.storyblok.com/f/606/...\" //Screenshot or other preview
+                image for your editor; Default: null\n        },\n       
+                \"component_id\": 4043861 //ID of the component the preset
+                should be connected\n    }\n}\n//created_at\tCreation date
+                (Format: YYYY-mm-dd HH:MM)\n//updated_at\tLatest update date
+                (Format: YYYY-mm-dd HH:MM)"
+      parameters:
+        - name: Authorization
+          in: header
+          schema:
+            type: string
+          example: YOUR_OAUTH_TOKEN
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: space_id
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: preset_id
+          in: path
+          schema:
+            type: integer
+          required: true
+          example: '1863288'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v1/field_types/:
+    get:
+      tags:
+        - Field types
+      summary: Retrieve multiple Field Types
+      security:
+        - noauthAuth: []
+      parameters:
+        - name: Authorization
+          in: header
+          schema:
+            type: string
+          example: pmsIxq3B7A9goBXXrNiFgAtt-121322-aWfksfAZzE4miCdev6ta
+        - name: per_page
+          in: query
+          schema:
+            type: integer
+          example: '100'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    post:
+      tags:
+        - Field types
+      summary: Create a Field Type
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                field_type:
+                  name: This-is-my-test-plugin
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /v1/field_types/{id}:
+    get:
+      tags:
+        - Field types
+      summary: Retrieve a Field Type
+      parameters:
+        - name: Authorization
+          in: header
+          schema:
+            type: string
+          example: pmsIxq3B7A9goBXXrNiFgAtt-121322-aWfksfAZzE4miCdev6ta
+        - name: id
+          in: path
+          schema:
+            type: integer
+          required: true
+          example: '32633'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    delete:
+      tags:
+        - Field types
+      summary: Delete a Field Type
+      parameters:
+        - name: id
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    put:
+      tags:
+        - Field types
+      summary: Update a Field Type
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example: |-
+                {
+                    "field_type": {
+                        "body": "const FieldType = { }", // include your Javascript code here,
+                        "compiled_body": "", 
+                        "space_ids": [], // the spaces to assign the Field type
+                        //"publish": 
+                    }
+                }
+      parameters:
+        - name: id
+          in: path
+          schema:
+            type: integer
+          required: true
+          example: '61375'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /233027/workflows:
+    post:
+      tags:
+        - Workflows
+      summary: Create new custom workflow
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                scope: workflow
+                required: false
+                name: test-content
+                description: Content type whitelist
+                content_types:
+                  - author
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    get:
+      tags:
+        - Workflows
+      summary: Filter custom workflow by content-types
+      parameters:
+        - name: by_content_type
+          in: query
+          schema:
+            type: string
+          example: page
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /233027/workflows/18296:
+    delete:
+      tags:
+        - Workflows
+      summary: Delete a workflow
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /233027/workflows/14780/duplicate:
+    post:
+      tags:
+        - Workflows
+      summary: Duplicate a workflow
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                scope: workflow
+                required: true
+                name: content
+                description: Name
+                content_types:
+                  - article
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /233027/workflows/{workflow_id}:
+    get:
+      tags:
+        - Workflows
+      summary: Get a specific workflow
+      parameters:
+        - name: workflow_id
+          in: path
+          schema:
+            type: integer
+          required: true
+          example: '14780'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /233027/workflows/14780:
+    put:
+      tags:
+        - Workflows
+      summary: Update workflow
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                scope: workflow
+                description: Content type whitelist
+                name: page
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /{space_id}/workflow_stages/:
+    get:
+      tags:
+        - Workflow Stages > Retrieve multiple Workflow Stages
+      summary: Retrieve multiple Workflow Stages
+      parameters:
+        - name: space_id
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    post:
+      tags:
+        - Workflow Stages
+      summary: Create a Workflow Stage
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                workflow_stage:
+                  after_publish_id: null
+                  color: '#07C2AA'
+                  name: Draft
+                  allow_publish: false
+                  allow_admin_publish: false
+                  allow_all_stages: true
+                  workflow_stage_ids: []
+                  allow_all_users: true
+                  position: 3
+                  is_default: false
+                  allow_editor_change: false
+                  allow_admin_change: false
+                  user_ids: []
+                  space_role_ids: []
+                  workflow_id: 14780
+      parameters:
+        - name: space_id
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /{space_id}/workflow_stages/528725:
+    get:
+      tags:
+        - Workflow Stages
+      summary: Retrieve a Workflow Stage
+      parameters:
+        - name: space_id
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    put:
+      tags:
+        - Workflow Stages
+      summary: Update a Workflow Stage
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                workflow_stage:
+                  after_publish_id: []
+                  allow_publish: []
+                  is_default: false
+                  position: 0
+                  allow_all_stages: false
+                  allow_all_users: true
+                  name: Ready to Publish
+                  color: '#333'
+                  user_ids: []
+                  space_role_ids: []
+                  workflow_stage_ids: []
+                  allow_editor_change: false
+                  allow_admin_change: false
+      parameters:
+        - name: Authorization
+          in: header
+          schema:
+            type: string
+          example: YOUR_OAUTH_TOKEN
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: space_id
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /{space_id}/workflow_stages/{workflow_stage_id}:
+    delete:
+      tags:
+        - Workflow Stages
+      summary: Delete a Workflow Stage
+      parameters:
+        - name: space_id
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: workflow_stage_id
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /233027/workflow_stage_changes:
+    get:
+      tags:
+        - Workflow Stage Changes
+      summary: Retrieve a workflow stage change with story
+      parameters:
+        - name: with_story
+          in: query
+          schema:
+            type: integer
+          example: '314931981'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /233027/workflow_stage_changes/:
+    post:
+      tags:
+        - Workflow Stage Changes
+      summary: Create a workflow stage change
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                workflow_stage_change:
+                  workflow_stage_id: '441200'
+                  story_id: 314931981
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /{space_id}/releases/:
+    get:
+      tags:
+        - Releases > Retrieve multiple Releases
+      summary: Retrieve multiple Releases
+      parameters:
+        - name: Authorization
+          in: header
+          schema:
+            type: string
+          example: YOUR_OAUTH_TOKEN
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: space_id
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    post:
+      tags:
+        - Releases
+      summary: Create a Release
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                name: 10 years celebration
+                release_at: 2023-08-26 19:00
+                branches_to_deploy: []
+                timezone: Europe/Moscow
+                users_to_notify_ids: []
+      parameters:
+        - name: space_id
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /{space_id}/releases/{release_id}:
+    get:
+      tags:
+        - Releases
+      summary: Retrieve a Release
+      parameters:
+        - name: space_id
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: release_id
+          in: path
+          schema:
+            type: integer
+          required: true
+          description: The release ID you want to fetch
+          example: '114967'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    put:
+      tags:
+        - Releases
+      summary: Update a Release
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              type: string
+              example: >-
+                "{\n    \"name\": \"Storyblok X\", //Name of the release\n   
+                \"release_at\": \"2023-08-31 21:55\", //Date to deploy the
+                release (Format: YYYY-mm-dd HH:MM)\n    \"branches_to_deploy\":
+                [], //You need the Pipeline app to use branches on your space
+                and retrieve branches ids\n    \"users_to_notify_ids\": [],
+                //List of IDs of the users you want to notify\n   
+                \"do_release\": false //If this parameter is included in the
+                request the release will be deployed\n}"
+      parameters:
+        - name: Authorization
+          in: header
+          schema:
+            type: string
+          example: YOUR_OAUTH_TOKEN
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: space_id
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: release_id
+          in: path
+          schema:
+            type: integer
+          required: true
+          description: The release ID you want to update
+          example: '114968'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    delete:
+      tags:
+        - Releases
+      summary: Delete a Release
+      parameters:
+        - name: space_id
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: release_id
+          in: path
+          schema:
+            type: integer
+          required: true
+          description: Add the release ID you want to destroy
+          example: '114987'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /{space_id}/branches/:
+    get:
+      tags:
+        - Branch > Retrieve Multiple Branches
+      summary: Retrieve Multiple Branches
+      parameters:
+        - name: space_id
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    post:
+      tags:
+        - Branch
+      summary: Create a Branch
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                branch:
+                  name: Branche D
+      parameters:
+        - name: space_id
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /{space_id}/branches/{branch_id}:
+    put:
+      tags:
+        - Branch
+      summary: Update a Branch
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                branch:
+                  name: Branche 123
+                  source_id: null
+                  deployed_at: null
+                  url: null
+                  position: 7
+      parameters:
+        - name: space_id
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: branch_id
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    get:
+      tags:
+        - Branch
+      summary: Retrieve a Branch
+      parameters:
+        - name: space_id
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: branch_id
+          in: path
+          schema:
+            type: string
+          required: true
+          description: The branch ID
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    delete:
+      tags:
+        - Branch
+      summary: Delete a Branch
+      parameters:
+        - name: space_id
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: branch_id
+          in: path
+          schema:
+            type: string
+          required: true
+          description: The branch id
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /{space_id}/deployments/:
+    post:
+      tags:
+        - Branch deployments
+      summary: Create a Branch Deployment
+      requestBody:
+        content:
+          '*/*':
+            schema:
+              type: string
+              example: >-
+                "{\n    \"branch_id\": 30402, //The branch id to deploy
+                required\n    \"release_uuids\": [ //The array of releases
+                (referenced by their respective uuids to deploy) -> Use the
+                Retrieve multiple Releases to check the releases uuids\n       
+                \"f3ea2f30-1234-1234-1234-3860215f0cab\"\n    ]\n}"
+      parameters:
+        - name: Content-Type
+          in: header
+          schema:
+            type: string
+          example: application/json
+        - name: Authorization
+          in: header
+          schema:
+            type: string
+          example: YOUR_OAUTH_TOKEN
+        - name: space_id
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /orgs/me:
+    get:
+      tags:
+        - Fetch all users in an org
+      summary: Fetch all users in an org
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /{space_id}/mentioned_discussions/me:
+    get:
+      tags:
+        - Discussions
+      summary: Retrieve Mentioned Discussions
+      parameters:
+        - name: space_id
+          in: path
+          schema:
+            type: string
+          required: true
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /{space_id}/stories/{story_id}/discussions:
+    get:
+      tags:
+        - Discussions
+      summary: Retrieve a Discussion
+      parameters:
+        - name: space_id
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: story_id
+          in: path
+          schema:
+            type: integer
+          required: true
+          example: '314931981'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /{space_id}/discussions/{discussion_id}/comments:
+    get:
+      tags:
+        - Discussions
+      summary: Retrieves Comments in a Discussion
+      parameters:
+        - name: space_id
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: discussion_id
+          in: path
+          schema:
+            type: integer
+          required: true
+          example: '37864'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    post:
+      tags:
+        - Discussions
+      summary: Post a Comment in a Discussion
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                comment:
+                  message_json:
+                    - type: text
+                      text: Hello new comment
+      parameters:
+        - name: space_id
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: discussion_id
+          in: path
+          schema:
+            type: integer
+          required: true
+          example: '37864'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /{space_id}/discussions/{discussion_id}/comments/{comment_id}:
+    put:
+      tags:
+        - Discussions
+      summary: Update a Comment in a Discussion
+      requestBody:
+        content:
+          application/json:
+            schema:
+              type: object
+              example:
+                comment:
+                  message_json:
+                    - type: text
+                      text: one moreee + next 1
+      parameters:
+        - name: space_id
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: discussion_id
+          in: path
+          schema:
+            type: integer
+          required: true
+          example: '37864'
+        - name: comment_id
+          in: path
+          schema:
+            type: integer
+          required: true
+          example: '119438'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+    delete:
+      tags:
+        - Discussions
+      summary: Delete a Comment in a Discussion Copy
+      parameters:
+        - name: space_id
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: discussion_id
+          in: path
+          schema:
+            type: integer
+          required: true
+          example: '37864'
+        - name: comment_id
+          in: path
+          schema:
+            type: integer
+          required: true
+          example: '119439'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /{space_id}/stories/{story_id}/export.json:
+    get:
+      tags:
+        - Export/Import content entry
+      summary: /export.json
+      parameters:
+        - name: Authorization
+          in: header
+          schema:
+            type: string
+          example: vkTE2hrKIeSHt1JuQMDkggtt-100172-CxxAqFBBUss3KHoEntmi
+        - name: space_id
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: story_id
+          in: path
+          schema:
+            type: integer
+          required: true
+          example: '352831144'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
+  /{space_id}/stories/{story_id}/import.json:
+    put:
+      tags:
+        - Export/Import content entry
+      summary: /import.json
+      requestBody:
+        content:
+          multipart/form-data:
+            schema:
+              type: object
+              properties:
+                data:
+                  type: string
+                  example: |-
+                    {
+                        "d51233a5-8ebb-4991-baba-9a46866a8866:feature:name": "Das ist eine Überschrift",
+                        "972c282e-96ea-4275-8a0e-48641b3e1666:Full_fields:Text_type": "",
+                        "6a9ecef6-07ad-45de-acb7-1f9100878d62:_table_col:value": "",
+                        "e3b66d94-f19e-49dc-a3ba-5672793d6403:_table_col:value": "",
+                        "9d51a417-d9f8-4edf-8d2f-160322d42869:_table_head:value": "",
+                        "ddea9bf8-6d2a-4aff-8b5f-ad874aea5f69:_table_head:value": "",
+                        "972c282e-96ea-4275-8a0e-48641b3e1666:Full_fields:Number_type": "",
+                        "972c282e-96ea-4275-8a0e-48641b3e1666:Full_fields:Plugin_type": "",
+                        "972c282e-96ea-4275-8a0e-48641b3e1666:Full_fields:FileOLD_type": "",
+                        "972c282e-96ea-4275-8a0e-48641b3e1666:Full_fields:DataTime_type": "",
+                        "972c282e-96ea-4275-8a0e-48641b3e1666:Full_fields:ImageOLD_type": "",
+                        "972c282e-96ea-4275-8a0e-48641b3e1666:Full_fields:Markdown_type": "",
+                        "972c282e-96ea-4275-8a0e-48641b3e1666:Full_fields:richtext:RichText_type": "{\"type\":\"doc\",\"content\":[{\"type\":\"paragraph\"}]}",
+                        "972c282e-96ea-4275-8a0e-48641b3e1666:Full_fields:TextArea_type": "",
+                        "972c282e-96ea-4275-8a0e-48641b3e1666:Full_fields:SingleOptions_type": "",
+                        "page": "352831144",
+                        "language": "default",
+                        "url": "page",
+                        "text_nodes": 0
+                    }
+      parameters:
+        - name: Authorization
+          in: header
+          schema:
+            type: string
+          example: vkTE2hrKIeSHt1JuQMDkggtt-100172-CxxAqFBBUss3KHoEntmi
+        - name: lang_code
+          in: query
+          schema:
+            type: string
+          example: de
+        - name: import_lang
+          in: query
+          schema:
+            type: boolean
+          example: 'true'
+        - name: space_id
+          in: path
+          schema:
+            type: string
+          required: true
+        - name: story_id
+          in: path
+          schema:
+            type: integer
+          required: true
+          example: '352831144'
+      responses:
+        '200':
+          description: Successful response
+          content:
+            application/json: {}
